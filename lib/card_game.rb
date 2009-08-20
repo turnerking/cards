@@ -4,8 +4,9 @@ class CardGame
   
   attr_accessor :deck
   
-  def initialize
-    @deck = Deck.new
+  def initialize(options = {})
+    @deck = Deck.new(options)
+    @deck.shuffle!
   end
   
 end
