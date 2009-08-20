@@ -1,4 +1,5 @@
 class Card
+  include Comparable
 	attr_accessor :rank, :suit
 
 	def initialize(attrs = {})
@@ -25,4 +26,8 @@ class Card
       raise "Well what are you then? (#{@rank})"
     end
 	end
+	
+	def <=>(card)
+    @rank <=> card.rank
+  end
 end

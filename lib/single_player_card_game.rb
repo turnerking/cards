@@ -1,0 +1,2 @@
+class SinglePlayerCardGame < CardGame
+end
