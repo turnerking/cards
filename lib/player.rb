@@ -1,4 +1,4 @@
-require 'hand'
+require File.expand_path(File.dirname(__FILE__) + '/hand')
 
 class Player
 

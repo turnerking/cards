@@ -1,5 +1,5 @@
-require 'card_game'
-require 'player'
+require File.expand_path(File.dirname(__FILE__) + '/card_game')
+require File.expand_path(File.dirname(__FILE__) + '/player')
 
 class MultiplayerCardGame < CardGame
   

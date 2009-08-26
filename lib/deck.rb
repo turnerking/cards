@@ -1,4 +1,4 @@
-require 'card_collection'
+require File.expand_path(File.dirname(__FILE__) + '/card_collection')
 
 class Deck < CardCollection
   def initialize(options = {})

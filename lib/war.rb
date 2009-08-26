@@ -1,4 +1,4 @@
-require 'multiplayer_card_game'
+require File.expand_path(File.dirname(__FILE__) + '/multiplayer_card_game')
 
 class War < MultiplayerCardGame
   
@@ -8,8 +8,6 @@ class War < MultiplayerCardGame
     super(:number_of_decks => 1, :aces_high => true)
     @deck.shuffle!
     create_players(2, false)
-    @played_cards = []
-    @pot = []
   end
   
   def deal_initial_cards
@@ -22,25 +20,27 @@ class War < MultiplayerCardGame
   
   def play
     while everyone_has_cards
+      @pot = []
+      @played_cards = []
       round
     end
     @players.each do |player|
-      puts player.hand.size
+      puts player.player_no.to_s + ": " + player.hand.size.to_s
     end
   end
   
   def round
     players_play_cards(@played_cards)
     winners_index = determine_winner
+    add_played_cards_to_pot
     return give_cards_to_player(@pot, @players[winners_index]) unless winners_index == -1
     go_to_war
   end
   
   def go_to_war
-    @pot << @played_cards
-    @played_cards.clear
+    @played_cards = []
     3.times { players_play_cards(@pot) }
-    play
+    round
   end
   
   def players_play_cards(collection)
@@ -48,8 +48,8 @@ class War < MultiplayerCardGame
   end
   
   def determine_winner
-    max_number = @played_cards.max
-    @played_cards.map {|card| card.rank == max_number}.compact.size > 1 ? -1 : @played_cards.index(max_number)
+    max_number = @played_cards.map{|card| card ? card.rank : 0 }.max
+    number_of_cards_with(max_number) > 1 ? -1 : player_with(max_number)
   end
   
   def give_cards_to_player(pot, player)
@@ -60,7 +60,21 @@ class War < MultiplayerCardGame
     @players.each do |player|
       return false if player.hand.empty?
     end
-    return true
+    true
+  end
+  
+private
+  def add_played_cards_to_pot
+    @pot << @played_cards
+    @pot.flatten!.compact!
+  end
+  
+  def number_of_cards_with(rank)
+    @played_cards.map {|card| !card.nil? && card.rank == rank ? 1 : nil}.compact.size
+  end
+  
+  def player_with(rank)
+    @played_cards.index{|card| !card.nil? && card.rank == rank}
   end
   
 end
