@@ -31,6 +31,7 @@ class War < MultiplayerCardGame
   
   def round
     players_play_cards(@played_cards)
+    display_battle
     winners_index = determine_winner
     add_played_cards_to_pot
     return give_cards_to_player(@pot, @players[winners_index]) unless winners_index == -1
@@ -38,6 +39,7 @@ class War < MultiplayerCardGame
   end
   
   def go_to_war
+    puts "WAR!!!"
     @played_cards = []
     3.times { players_play_cards(@pot) }
     round
@@ -64,6 +66,12 @@ class War < MultiplayerCardGame
   end
   
 private
+  def display_battle
+    @played_cards.each_with_index do |card, index|
+      puts "Player #{index + 1}: #{card}"
+    end
+  end
+
   def add_played_cards_to_pot
     @pot << @played_cards
     @pot.flatten!.compact!
