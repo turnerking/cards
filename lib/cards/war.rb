@@ -86,7 +86,3 @@ private
   end
   
 end
-
-w = War.new
-w.deal_initial_cards
-w.play
