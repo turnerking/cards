@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/multiplayer_card_game')
+require File.expand_path(File.dirname(__FILE__) + '/../cards/multiplayer_card_game')
 
 class War < MultiplayerCardGame
   
@@ -10,22 +10,14 @@ class War < MultiplayerCardGame
     create_players(2, false)
   end
   
-  def deal_initial_cards
-    while !@deck.empty? do
-      @players.each do |player|
-        @deck.give_card_to(player)
-      end
-    end
-  end
-  
   def play
     while everyone_has_cards
       @pot = []
       @played_cards = []
       round
-    end
-    @players.each do |player|
-      puts player.player_no.to_s + ": " + player.hand.size.to_s
+      @players.each do |player|
+        puts "#{player.player_no}: #{player.hand.size.to_s}"
+      end
     end
   end
   

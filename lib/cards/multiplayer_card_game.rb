@@ -16,4 +16,13 @@ class MultiplayerCardGame < CardGame
     end
   end
   
+  def deal_initial_cards
+    while !@deck.empty? do
+      @players.each do |player|
+        break if @deck.empty?
+        @deck.give_card_to(player)
+      end
+    end
+  end
+  
 end

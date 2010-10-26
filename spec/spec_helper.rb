@@ -1,4 +1,4 @@
 $: << File.join(File.dirname(__FILE__), *"/../lib")
 require 'rubygems'
 require 'spec'
-require 'cards'
+require 'common_card_classes'

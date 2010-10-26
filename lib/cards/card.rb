@@ -4,7 +4,7 @@ class Card
 
 	def initialize(attrs = {})
 		@rank = attrs[:rank] || 0
-		@suit = attrs[:suit] || "C"
+		@suit = attrs[:suit] || "♣"
 	end
 	
 	def to_s

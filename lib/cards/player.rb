@@ -9,6 +9,10 @@ class Player
     @player_no = attrs[:player_no] || 0
     @is_human = attrs[:is_human] || false
   end
+
+  def to_s
+    "Player #{player_no}"
+  end
   
   def play_top_card
     @hand.shift

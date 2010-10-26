@@ -6,7 +6,6 @@ class CardGame
   
   def initialize(options = {})
     @deck = Deck.new(options)
-    @deck.shuffle!
   end
   
 end

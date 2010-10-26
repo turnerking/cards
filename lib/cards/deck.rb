@@ -14,7 +14,7 @@ private
   def create_decks(options)
     (options[:number_of_decks] || 1).times do
       range(options).each do |rank|
-        ["H", "D", "C", "S"].each do |suit|
+        ["♥", "♦", "♣", "♠"].each do |suit|
           self.push(Card.new(:rank => rank, :suit => suit))
         end
       end

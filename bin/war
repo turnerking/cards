@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.push File.join(File.dirname(__FILE__), "/../lib")
-require 'cards'
+require 'war'
 
-w = War.new
-w.deal_initial_cards
-w.play
+game = War.new
+game.deal_initial_cards
+game.play
