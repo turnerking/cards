@@ -1,5 +1,5 @@
 class Card
-  def ==(card)
+  def same_as?(card)
     @rank == card.rank && @suit == card.suit
   end
 end

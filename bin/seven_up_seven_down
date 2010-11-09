@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.push File.join(File.dirname(__FILE__), "/../lib")
+require 'common_card_classes'
 require 'seven_up_seven_down'
 
 g = SevenUpSevenDown.new

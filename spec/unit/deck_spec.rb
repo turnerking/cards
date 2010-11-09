@@ -12,7 +12,6 @@ describe Deck do
     end
   
     it "has unique cards by default" do
-      pending
       @deck.uniq.size.should == 52
     end
   end

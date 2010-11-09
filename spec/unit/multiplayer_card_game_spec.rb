@@ -26,6 +26,10 @@ describe MultiplayerCardGame do
     end
   end
   
-  
+end
 
+class NilClass
+  def rank
+    self
+  end
 end

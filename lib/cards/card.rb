@@ -6,9 +6,21 @@ class Card
 		@rank = attrs[:rank] || 0
 		@suit = attrs[:suit] || "♣"
 	end
+
+  def suit_to_word
+    {"♥" => "heart",
+     "♦" => "diamond",
+     "♣" => "club",
+     "♠" => "spade"
+    }[@suit]
+  end
 	
 	def to_s
 	  "#{display_rank}#{@suit}"
+	end
+	
+	def to_splittable_s
+	  "#{@rank}:#{@suit}"
 	end
 	
 	def display_rank
