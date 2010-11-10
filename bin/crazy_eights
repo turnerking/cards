@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.push File.join(File.dirname(__FILE__), "/../lib")
+require 'common_card_classes'
+require 'crazy_eights'
+
+g = CrazyEights.new
+g.deal_initial_cards
+g.play

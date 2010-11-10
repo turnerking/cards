@@ -42,4 +42,8 @@ class Card
 	def <=>(card)
     @rank <=> card.rank
   end
+
+  def same_as?(card)
+    @rank == card.rank && @suit == card.suit
+  end
 end
