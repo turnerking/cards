@@ -22,4 +22,13 @@ describe CrazyEights do
       original_deck.should_not == @game.deck
     end
   end
+
+  describe "play" do
+    it "doesn't lose cards" do
+      @game.deal_initial_cards
+      @game.with_output = false
+      @game.play
+      (@game.deck.size + @game.discard_pile.size).should == 52
+    end
+  end
 end

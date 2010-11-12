@@ -14,6 +14,26 @@ class Card
      "♠" => "spade"
     }[@suit]
   end
+
+  RANK_TO_WORD_HASH =
+    { "A" => "ace",
+      "2" => "two",
+      "3" => "three",
+      "4" => "four",
+      "5" => "five",
+      "6" => "six",
+      "7" => "seven",
+      "8" => "eight",
+      "9" => "nine",
+      "10" => "ten",
+      "J" => "jack",
+      "Q" => "queen",
+      "K" => "king",
+    }
+
+  def rank_to_word
+    RANK_TO_WORD_HASH[display_rank]
+  end
 	
 	def to_s
 	  "#{display_rank}#{@suit}"
@@ -45,5 +65,11 @@ class Card
 
   def same_as?(card)
     @rank == card.rank && @suit == card.suit
+  end
+
+  RANK_TO_WORD_HASH.each do |rank, word|
+    define_method("#{word}?".to_sym) do
+      display_rank == rank
+    end
   end
 end
