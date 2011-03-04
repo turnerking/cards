@@ -4,8 +4,8 @@ class War < MultiplayerCardGame
   
   attr_accessor :played_cards, :pot
   
-  def initialize
-    super(:number_of_decks => 1, :aces_high => true)
+  def initialize(options = {})
+    super({:number_of_decks => 1, :aces_high => true}.merge(options))
     @deck.shuffle!
     create_players(2, false)
   end
@@ -16,14 +16,13 @@ class War < MultiplayerCardGame
       @played_cards = []
       round
       @players.each do |player|
-        puts "#{player.player_no}: #{player.hand.size.to_s}"
+        game_event "#{player.player_no}: #{player.hand.size.to_s}"
       end
     end
   end
   
   def round
     players_play_cards(@played_cards)
-    display_battle
     winners_index = determine_winner
     add_played_cards_to_pot
     return give_cards_to_player(@pot, @players[winners_index]) unless winners_index == -1
@@ -31,14 +30,18 @@ class War < MultiplayerCardGame
   end
   
   def go_to_war
-    puts "WAR!!!"
+    game_event "WAR!!!"
     @played_cards = []
-    3.times { players_play_cards(@pot) }
+    3.times { players_play_cards(@pot, true) }
     round
   end
   
-  def players_play_cards(collection)
-    @players.each {|player| collection << player.play_top_card}
+  def players_play_cards(collection, pot = false)
+    @players.each do |player| 
+      played_card = player.play_top_card 
+      collection << played_card
+      game_event "#{player}: #{played_card}" unless pot
+    end
   end
   
   def determine_winner
@@ -58,11 +61,6 @@ class War < MultiplayerCardGame
   end
   
 private
-  def display_battle
-    @played_cards.each_with_index do |card, index|
-      puts "Player #{index + 1}: #{card}"
-    end
-  end
 
   def add_played_cards_to_pot
     @pot << @played_cards

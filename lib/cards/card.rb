@@ -28,7 +28,7 @@ class Card
       "10" => "ten",
       "J" => "jack",
       "Q" => "queen",
-      "K" => "king",
+      "K" => "king"
     }
 
   def rank_to_word

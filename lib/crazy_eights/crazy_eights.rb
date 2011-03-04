@@ -3,37 +3,40 @@ class CrazyEights < MultiplayerCardGame
   attr_reader :crazy_number
 
   def initialize(options = {})
-    super(:number_of_decks => options[:number_of_decks] || 1)
+    super({:number_of_decks => 1}.merge(options))
     @starting_no_of_cards = options[:starting_no_of_cards] || 5
     @discard_pile = CardCollection.new
     @deck.shuffle!
     create_players(options[:no_of_players] || 4, false)
-    @discard_pile << @deck.shift
     @place_playing_for = 1
     @crazy_number = options[:crazy_number] || 8
-    @crazy_suit = @discard_pile.last.suit
   end
 
   def play
+    @discard_pile << @deck.shift
+    @crazy_suit = @discard_pile.last.suit
     while someone_has_cards do
       @players.each do |player|
         next if player.hand.empty?
-        game_play "#{player} starts turn".center(40, "~")
-        game_play "Top card is #{@discard_pile.last}"
-        while available_cards_to(player).empty?
-          replenish_deck if @deck.empty?
-          @deck.give_card_to(player)
-          game_play "#{player} draws a card"
-          replenish_deck if @deck.empty?
-        end
-        play_card(available_cards_to(player).first, player)
-        if player.hand.empty?
-          game_play "#{player} finished #{place_playing_for.ordinal}"
-          @place_playing_for = place_playing_for.next
-        end
-        game_play "#{player} finished turn".center(40, "^") + "\n\n"
+        turn_for(player)
       end
     end
+  end
+
+  def turn_for(player)
+    game_event "#{player} starts turn".center(40, "~")
+    game_event "Top card is #{@discard_pile.last}"
+    while available_cards_to(player).empty?
+      replenish_deck if @deck.empty?
+      @deck.give_card_to(player)
+      game_event "#{player} draws a card"
+    end
+    play_card(available_cards_to(player).first, player)
+    if player.hand.empty?
+      game_event "#{player} finished #{place_playing_for.ordinal}"
+      @place_playing_for = place_playing_for.next
+    end
+    game_event "#{player} finished turn".center(40, "^") + "\n\n"
   end
 
   def play_card(played_card, player)
@@ -41,11 +44,11 @@ class CrazyEights < MultiplayerCardGame
     player.hand.delete_if {|card| card.same_as?(played_card) }
     if played_card.send("#{crazy_number_to_word}?")
       @crazy_suit = choose_suit_for(player)
-      game_play "CRAZY #{crazy_number_to_word.upcase}! Suit is now #{@crazy_suit}"
+      game_event "CRAZY #{crazy_number_to_word.upcase}! Suit is now #{@crazy_suit}"
     else
       @crazy_suit = played_card.suit
     end
-    game_play "#{player} played #{played_card}"
+    game_event "#{player} played #{played_card}"
   end
 
   def replenish_deck
@@ -55,7 +58,7 @@ class CrazyEights < MultiplayerCardGame
     @deck.shuffle!
     @discard_pile = CardCollection.new
     @discard_pile << top_card
-    game_play "Shuffling Discard into deck"
+    game_event "Shuffling Discard into deck"
   end
   
   def available_cards_to(player)
@@ -110,10 +113,6 @@ class CrazyEights < MultiplayerCardGame
       end
     end
     suit_to_return
-  end
-
-  def game_play(message)
-    puts message if with_output
   end
 
   def crazy_number_to_word

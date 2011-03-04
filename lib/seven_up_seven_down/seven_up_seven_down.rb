@@ -2,10 +2,10 @@ class SevenUpSevenDown < MultiplayerCardGame
   
   attr_accessor :played_hearts, :played_spades, :played_clubs, :played_diamonds, :place_playing_for, :playable_cards
   
-  def initialize
-    super(:number_of_decks => 1)
+  def initialize(options = {})
+    super({:number_of_decks => 1}.merge(options))
     @deck.shuffle!
-    create_players(13, false)
+    create_players(options[:no_of_players] || 4, false)
     create_played_collections
     initial_playable_cards
     @place_playing_for = 1
@@ -15,29 +15,33 @@ class SevenUpSevenDown < MultiplayerCardGame
     while someone_has_cards do
       @players.each do |player|
         next if player.hand.empty?
-        puts "#{player} starts turn".center(40, "~")
-        available_cards = available_cards_to(player)
-        if !available_cards.empty?
-          card_to_play = choose_card_from(available_cards)
-          play_card(card_to_play, player)
-          print_table
-          if player.hand.empty?
-            puts "#{player} finished #{place_playing_for.ordinal}"
-            @place_playing_for = place_playing_for.next
-          end
-        else
-          puts "#{player} passed"
-          print_table
-        end
-        puts "#{player} finished turn".center(40, "^") + "\n\n"
+        turn_for(player)
       end
     end
+  end
+
+  def turn_for(player)
+    game_event "#{player} starts turn".center(40, "~")
+    available_cards = available_cards_to(player)
+    if available_cards.empty?
+      game_event "#{player} passed"
+      print_table
+    else
+      card_to_play = choose_card_from(available_cards)
+      play_card(card_to_play, player)
+      print_table
+      if player.hand.empty?
+        game_event "#{player} finished #{place_playing_for.ordinal}"
+        @place_playing_for = place_playing_for.next
+      end
+    end
+    game_event "#{player} finished turn".center(40, "^") + "\n\n"
   end
 
   def play_card(played_card, player)
     add_played_card(played_card)
     player.hand.delete_if {|card| card.same_as?(played_card) }
-    puts "#{player} played #{played_card}"
+    game_event "#{player} played #{played_card}"
   end
 
   def available_cards_to(player)
@@ -66,12 +70,15 @@ class SevenUpSevenDown < MultiplayerCardGame
     when (2..6).include?(card.rank)
       playable_cards << Card.new(:rank => (card.rank - 1), :suit => card.suit)
     else
-      # Playing an ace or a king
+      played_a_cap_card(card)
     end
   end
 
   def choose_card_from(available_cards)
-    available_cards.first
+    #Strategy 1: Play furthest card available
+    available_cards.sort {|a,b| (7 - b.rank).abs <=> (7 - a.rank).abs}.first
+    #Strategy 2: Play closest card available
+    #available_cards.sort {|a,b| (7 - a.rank).abs <=> (7 - b.rank).abs}.first
   end
 
   def someone_has_cards
@@ -89,7 +96,7 @@ class SevenUpSevenDown < MultiplayerCardGame
         (played_cards.sort.first.rank - 1).times { string += "   " }
       end
 
-      puts (string + played_cards.sort.join(" "))
+      game_event (string + played_cards.sort.join(" "))
     end
   end
 
@@ -109,5 +116,9 @@ class SevenUpSevenDown < MultiplayerCardGame
 
   def played_collections_array
     [@played_hearts, @played_spades, @played_clubs, @played_diamonds]
+  end
+
+  def played_a_cap_card(card)
+    raise "Should be an ace or a king, but was #{card.inspect}" unless [1,13].include?(card.rank)
   end
 end
